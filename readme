@@ -1,0 +1,50 @@
+MEPN Implementation
+===================
+
+The following programs are useful for computing minimal elements for prime numbers in various bases:
+
+minimal:
+	Computes minimal primes for bases between l and h,
+	possibly along with a set of unsolved families.
+	Usage: minimal l h
+	To resume base b from iter i: minimal resume b i
+
+simple:
+	This program searches unsolved simple families
+	for prime candidates between exponents n and m,
+	given on the command-line
+
+sieving.start:
+	Initializes sieve files for all unsolved families
+	between exponents n and m, given on the command-line
+	which may then be processed by programs sieving and search
+
+sieving:
+	Given a base on the command line, this program runs
+	srsieve on that base sieve file and then
+	merges the results with the LLR search data
+
+	NOTE: The program srsieve must be located in the directory srsieve
+
+search:
+	After sieving has been done, this program uses LLR
+	to search for prime candidates between exponents
+	n and m, given on the command-line
+
+	NOTE: The program llr must be located in the base directory
+
+merge:
+	Merges the candidate lists in the data directory
+	(used by llr) and the srsieve directory (used by srsieve)
+	so that duplication of work does not occur
+
+organize:
+	Sorts the minimal primes and removes any extraneous elements
+
+check:
+	Checks the minimal primes using a pseduoprime test and
+	creates candidate files suitable for testing with Primo
+
+summary:
+	Writes a summary of the minimal prime data
+	computed found for each base on the standard output

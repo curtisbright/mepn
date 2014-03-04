@@ -21,6 +21,7 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
+	mkdir("srsieve", S_IRWXU);
 	dp = opendir("./data");
 	if(dp != NULL)
 	{	while(ep = readdir(dp))

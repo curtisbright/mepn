@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 					int base = atoi(filename+9);
 					sprintf(infilename, "data/%s", ep->d_name);
 					FILE* in = fopen(infilename, "r");
-					sprintf(outfilename, "data/tmp-%s", ep->d_name);
+					tmpnam(outfilename);
 					FILE* out = fopen(outfilename, "w");
 					char line[100];
 					char start[100];
@@ -105,7 +105,7 @@ int main(int argc, char** argv)
 						int num = -1;
 						char sievefilename[100], sievetmpfilename[100];
 						sprintf(sievefilename, "data/sieve.%d.txt", base);
-						sprintf(sievetmpfilename, "data/tmp-sieve.%d.txt", base);
+						tmpnam(sievetmpfilename);
 						FILE* sieve = fopen(sievefilename, "r");
 						if(sieve!=NULL)
 						{	while(fgets(line, 100, sieve)!=NULL)

@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 		{	fclose(in1);
 			continue;
 		}
-		sprintf(filenameout, "srsieve/tmp-sieve.%d.txt", base);
+		tmpnam(filenameout);
 		FILE* out = fopen(filenameout, "w");
 		int n1, n2;
 		char line1[100], line2[100];

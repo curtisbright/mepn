@@ -46,7 +46,8 @@ int main(int argc, char** argv)
 	if(argc<=2)
 	{	printf("After sieving has been done, this program uses LLR\n");
 		printf("to search for prime candidates between exponents\n");
-		printf("n and m, given on the command-line\n");
+		printf("n and m, given on the command-line (optionally, a\n");
+		printf("base b may be given as a third parameter)\n");
 		printf("\nNOTE: The program llr must be located in the base directory\n");
 		return 0;
 	}
@@ -63,6 +64,8 @@ int main(int argc, char** argv)
 				if(strcmp(filename, "unsolved")==0)
 				{	strcpy(strchr(filename+9, '.'), "\0");
 					int base = atoi(filename+9);
+					if(argc>=4 && base!=atoi(argv[3]))
+						continue;
 					sprintf(infilename, "data/%s", ep->d_name);
 					FILE* in = fopen(infilename, "r");
 					tmpnam(outfilename);

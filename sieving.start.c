@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 				char end[100];
 				int count = 0;
 				if(outopen)
-					fprintf(out, "pmin=29\n");
+					fprintf(out, "pmin=31\n");
 				while(fgets(line, 100, in)!=NULL)
 				{	count++;
 					int l = (int)(strchr(line, '*')-line);
@@ -86,19 +86,38 @@ int main(int argc, char** argv)
 					if(outopen)
 					{	gmp_fprintf(out, "%Zd*%d^n%+Zd\n", temp, base, temp3);
 
-						for(int num=atoi(argv[1]); num<=atoi(argv[2]); num++)
-						{	mpz_ui_pow_ui(p, base, num);
-							mpz_mul(p, p, temp);
-							mpz_add(p, p, temp3);
-							mpz_divexact_ui(p, p, (base-1)/g);
-							// Check for factors the slow and easy way...
-							if(mpz_divisible_ui_p(p, 2)!=0 || mpz_divisible_ui_p(p, 3)!=0 || mpz_divisible_ui_p(p, 5)!=0 ||
-							mpz_divisible_ui_p(p, 7)!=0 || mpz_divisible_ui_p(p, 11)!=0 || mpz_divisible_ui_p(p, 13)!=0 ||
-							mpz_divisible_ui_p(p, 17)!=0 || mpz_divisible_ui_p(p, 19)!=0 || mpz_divisible_ui_p(p, 23)!=0 ||
-							mpz_divisible_ui_p(p, 27)!=0)
+						char* divis = calloc(atoi(argv[2])+1, 1);
+						for(int k=2; k<30; k++)
+						{	if(!(k==2 || k==3 || k==5 || k==7 || k==11 || k==13 || k==17 || k==19 || k==23 || k==29))
 								continue;
-							fprintf(out, "%d\n", num);
-					}
+
+							int start = 0;
+							int difference = 0;
+
+							for(int num=atoi(argv[1]); num<=atoi(argv[1])+2*k; num++)
+							{	mpz_ui_pow_ui(p, base, num);
+								mpz_mul(p, p, temp);
+								mpz_add(p, p, temp3);
+								mpz_divexact_ui(p, p, (base-1)/g);
+								if(mpz_divisible_ui_p(p, k)!=0)
+								{	if(start == 0)
+										start = num;
+									else
+									{	difference = num - start;
+										break;
+									}
+								}
+							}
+
+							if(difference>0)
+								for(int num=start; num<=atoi(argv[2]); num+=difference)
+									divis[num] = 1;
+						}
+						for(int num=atoi(argv[1]); num<=atoi(argv[2]); num++)
+							if(divis[num] == 0)
+								fprintf(out, "%d\n", num);
+
+						free(divis);
 					}
 
 					mpz_clears(x, y, z, temp, temp2, temp3, temp10, NULL);

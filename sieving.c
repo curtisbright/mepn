@@ -11,6 +11,8 @@ void sig_handler(int signo)
 {	if(signo == SIGINT)
 	{	if(pid!=-1)
 			kill(pid, SIGINT);
+		int status;
+		wait(&status);
 		system("./merge");
 		exit(0);
 	}

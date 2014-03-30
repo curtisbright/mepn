@@ -31,6 +31,7 @@ search:
 	to search for prime candidates between exponents
 	n and m, given on the command-line (optionally, a
 	base b may be given as a third parameter)
+	Alternatively, "./search -" searches everything
 
 	NOTE: The program llr must be located in the base directory
 

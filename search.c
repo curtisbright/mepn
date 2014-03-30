@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include <gmp.h>
+#include <stdbool.h>
 #define MAXSTRING 1200000
 
 FILE *popen(const char *command, const char *type);
@@ -43,17 +44,19 @@ int main(int argc, char** argv)
 	mpz_t p;
 	mpz_init(p);
 
-	if(argc<=2)
+	if(argc<=1 || (argc==2 && argv[1][0] != '-'))
 	{	printf("After sieving has been done, this program uses LLR\n");
 		printf("to search for prime candidates between exponents\n");
 		printf("n and m, given on the command-line (optionally, a\n");
 		printf("base b may be given as a third parameter)\n");
+		printf("Alternatively, \"./search -\" searches everything\n");
 		printf("\nNOTE: The program llr must be located in the base directory\n");
 		return 0;
 	}
 
-	for(int i=atoi(argv[1]); i<=atoi(argv[2]); i++)
-	{	dp = opendir("./data");
+	for(int i=atoi(argv[1]); argv[1][0] == '-' || i<=atoi(argv[2]); i++)
+	{	bool test = false;
+		dp = opendir("./data");
 		if(dp != NULL)
 		{	while(ep = readdir(dp))
 			{	char filename[100];
@@ -121,11 +124,12 @@ int main(int argc, char** argv)
 							fclose(sieve);
 						}
 
-						if(num!=i)
+						if(num!=i && (argv[1][0] != '-' || num==-1))
 						{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
 							continue;
 						}
 
+						test = true;
 						memset(candidate, 0, MAXSTRING);
 						strcpy(candidate, start);
 						memset(candidate+strlen(candidate), middle[0], num);
@@ -246,6 +250,8 @@ int main(int argc, char** argv)
 		}
 		else
 			perror("Couldn't open the directory");
+		if(test==false && argv[1][0] == '-')
+			break;
 	}
 
 	mpz_clear(p);

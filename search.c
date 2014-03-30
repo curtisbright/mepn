@@ -126,9 +126,9 @@ int main(int argc, char** argv)
 							continue;
 						}
 
+						memset(candidate, 0, MAXSTRING);
 						strcpy(candidate, start);
-						for(int j=0; j<num; j++)
-							sprintf(candidate, "%s%c", candidate, middle[0]);
+						memset(candidate+strlen(candidate), middle[0], num);
 						strcat(candidate, end);
 
 						char kernelfilename[100];

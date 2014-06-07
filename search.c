@@ -78,6 +78,7 @@ int main(int argc, char** argv)
 					char middle[2];
 					char end[100];
 					char candidate[MAXSTRING];
+					int countfam = 0;
 					while(fgets(line, 100, in)!=NULL)
 					{	int l = (int)(strchr(line, '*')-line);
 						middle[0] = line[l-1];
@@ -124,6 +125,8 @@ int main(int argc, char** argv)
 							fclose(sieve);
 						}
 
+						countfam++;
+
 						if(num!=i && (argv[1][0] != '-' || num==-1))
 						{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
 							continue;
@@ -141,54 +144,56 @@ int main(int argc, char** argv)
 						FILE* kernel = fopen(kernelfilename, "r");
 						char prime[MAXSTRING];
 						int hassubword = 0;
-						printf("Checking %s%c^(%d)%s (base %d)...\n", start, middle[0], num, end, base);
-						while(fgets(prime, MAXSTRING, kernel)!=NULL)
-						{	prime[strlen(prime)-1] = '\0';
-							int k;
-							if(subword(prime, start, middle[0], end, &k)==1)
-							{	if(k<=num)
-								{	hassubword = 1;
-									break;
+						char output[1000000];
+						if(argc>=5 && countfam==atoi(argv[4]))
+						{	printf("Checking %s%c^(%d)%s (base %d)...\n", start, middle[0], num, end, base);
+							while(fgets(prime, MAXSTRING, kernel)!=NULL)
+							{	prime[strlen(prime)-1] = '\0';
+								int k;
+								if(subword(prime, start, middle[0], end, &k)==1)
+								{	if(k<=num)
+									{	hassubword = 1;
+										break;
+									}
 								}
 							}
-						}
-						fclose(kernel);
+							fclose(kernel);
 
-						if(hassubword)
-						{	printf("%s%c^(%d)%s (base %d) has a kernel subword %s\n", start, middle[0], num, end, base, prime);
+							if(hassubword)
+							{	printf("%s%c^(%d)%s (base %d) has a kernel subword %s\n", start, middle[0], num, end, base, prime);
 
-							// Remove the family from the sieve file
-							sieve = fopen(sievefilename, "r");
-							FILE* sieveout = fopen(sievetmpfilename, "w");
-							char sieveline[100];
-							int thisfamily = 0;
-							while(fgets(sieveline, 100, sieve)!=NULL)
-							{	if(strchr(sieveline, '*')!=NULL)
-									thisfamily = 0;
-								if(strcmp(sieveline, family)==0)
-									thisfamily = 1;
-								if(thisfamily==0)
-									fprintf(sieveout, "%s", sieveline);
+								// Remove the family from the sieve file
+								sieve = fopen(sievefilename, "r");
+								FILE* sieveout = fopen(sievetmpfilename, "w");
+								char sieveline[100];
+								int thisfamily = 0;
+								while(fgets(sieveline, 100, sieve)!=NULL)
+								{	if(strchr(sieveline, '*')!=NULL)
+										thisfamily = 0;
+									if(strcmp(sieveline, family)==0)
+										thisfamily = 1;
+									if(thisfamily==0)
+										fprintf(sieveout, "%s", sieveline);
+								}
+								fclose(sieve);
+								fclose(sieveout);
+								remove(sievefilename);
+								rename(sievetmpfilename, sievefilename);
+
+								continue;
 							}
-							fclose(sieve);
-							fclose(sieveout);
-							remove(sievefilename);
-							rename(sievetmpfilename, sievefilename);
 
-							continue;
+							FILE* llrfile = fopen("llr.in", "w");
+							fprintf(llrfile, "ABC ($a*$b^$c$d)/$e\n");
+							gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp, base, num, temp3, (base-1)/g);
+							fclose(llrfile);
+
+							FILE* llrprocess = popen("./llr llr.in -d -oOutputIterations=1000000", "r");
+							int n = fread(output, 1, 999999, llrprocess);
+							output[n] = '\0';
+							pclose(llrprocess);
+							printf("%s", strstr(output, "\r(")!=NULL ? strstr(output, "\r(") : output);
 						}
-
-						FILE* llrfile = fopen("llr.in", "w");
-						fprintf(llrfile, "ABC ($a*$b^$c$d)/$e\n");
-						gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp, base, num, temp3, (base-1)/g);
-						fclose(llrfile);
-
-						char output[1000000];
-						FILE* llrprocess = popen("./llr llr.in -d -oOutputIterations=1000000", "r");
-						int n = fread(output, 1, 999999, llrprocess);
-						output[n] = '\0';
-						pclose(llrprocess);
-						printf("%s", strstr(output, "\r(")!=NULL ? strstr(output, "\r(") : output);
 
 						if(strstr(output, "PRP")!=NULL)
 						{	// Add prime to set of minimal primes

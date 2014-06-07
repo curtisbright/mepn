@@ -6,7 +6,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <gmp.h>
-#define MAXSTRING 120000
+#define MAXSTRING 1200000
 
 int count = 0;
 

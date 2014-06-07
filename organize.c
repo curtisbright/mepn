@@ -3,7 +3,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
-#define MAXSTRING 120000
+#define MAXSTRING 1200000
 
 int compare(const void* a, const void* b)
 {	const char **ia = (const char **)a;

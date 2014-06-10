@@ -91,7 +91,7 @@ int main(int argc, char** argv)
 				if(in = fopen(filename, "r"))
 				{	while(fgets(line,MAXSTRING,in)!=NULL)
 					{	if(strchr(line,'*')==NULL && strchr(line,'=')==NULL)
-							if(levels[count-1].searchheight==0 || levels[count-1].searchheight>atoi(line))
+							if(levels[count-1].searchheight==0 || levels[count-1].searchheight>atoi(line)-1)
 								levels[count-1].searchheight = atoi(line)-1;
 					}
 					fclose(in);

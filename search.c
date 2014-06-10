@@ -145,7 +145,7 @@ int main(int argc, char** argv)
 						char prime[MAXSTRING];
 						int hassubword = 0;
 						char output[1000000] = {0};
-						if(argc>=5 && countfam==atoi(argv[4]))
+						if(argc<5 || countfam==atoi(argv[4]))
 						{	printf("Checking %s%c^(%d)%s (base %d)...\n", start, middle[0], num, end, base);
 							while(fgets(prime, MAXSTRING, kernel)!=NULL)
 							{	prime[strlen(prime)-1] = '\0';

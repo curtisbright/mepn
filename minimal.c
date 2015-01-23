@@ -275,7 +275,7 @@ int isprime(char* p)
 {	mpz_t temp;
 	mpz_init(temp);
 	mpz_set_str(temp, p, base);
-	if(mpz_probab_prime_p(temp, 25) > 0)
+	if(mpz_probab_prime_p(temp, 25) > 0 && mpz_tdiv_ui(temp, 4) == 1)
 	{	//gmp_printf("%Zd is prime\n", temp);
 		mpz_clear(temp);
 		return 1;
@@ -472,15 +472,21 @@ int hasdivisor(family p)
 	emptyinstancestring(str, p);
 	mpz_set_str(empty, str, base);
 	mpz_set_str(gcd, str, base);
+	int all3mod4 = 1;
 	for(int i=0; i<p.len; i++)
 	{	for(int j=0; j<p.numrepeats[i]; j++)
 		{	instancestring(str, p, i, j);
 			mpz_set_str(temp, str, base);
 			mpz_gcd(gcd, gcd, temp);
+			if(mpz_tdiv_ui(temp, 4) != 3)
+				all3mod4 = 0;
 		}
 		if(p.numrepeats[i]>0)
 			numrepeats++;
 	}
+
+	if(all3mod4)
+		return 1;
 
 	if(numrepeats==0)
 	{	

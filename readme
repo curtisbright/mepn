@@ -49,4 +49,7 @@ check:
 
 summary:
 	Writes a summary of the minimal prime data
-	computed found for each base on the standard output
+	computed for each base on the standard output
+
+Precomputed results for many bases can be found at:
+	https://github.com/curtisbright/mepn-data/tree/master/data

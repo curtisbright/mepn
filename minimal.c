@@ -2062,17 +2062,19 @@ int main(int argc, char** argv)
 #endif
 
 #ifdef PRINTDATA
-		sprintf(filename, "data/unsolved.%d.txt", base);
-		FILE* unsolvedfile = fopen(filename, "w");
-		for(int i=0; i<unsolved.size; i++)
-		{	char str[MAXSTRING];
-			if(issimple(unsolved.fam[i]))
-				simplefamilystring(str, unsolved.fam[i]);
-			else
-				familystring(str, unsolved.fam[i]);
-			fprintf(unsolvedfile, "%s\n", str);
+		if(unsolved.size>0)
+		{	sprintf(filename, "data/unsolved.%d.txt", base);
+			FILE* unsolvedfile = fopen(filename, "w");
+			for(int i=0; i<unsolved.size; i++)
+			{	char str[MAXSTRING];
+				if(issimple(unsolved.fam[i]))
+					simplefamilystring(str, unsolved.fam[i]);
+				else
+					familystring(str, unsolved.fam[i]);
+				fprintf(unsolvedfile, "%s\n", str);
+			}
+			fclose(unsolvedfile);
 		}
-		fclose(unsolvedfile);
 #endif
 
 		clearkernel();

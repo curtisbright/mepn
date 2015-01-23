@@ -83,8 +83,8 @@ int main(int argc, char** argv)
 				{	while(fgets(line,MAXSTRING,in)!=NULL)
 						numlines++;
 					fclose(in);
-					levels[count-1].unsolved = numlines;
 				}
+				levels[count-1].unsolved = numlines;
 
 				sprintf(filename, "data/sieve.%d.txt", n);
 				levels[count-1].searchheight = 0;

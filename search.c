@@ -183,15 +183,20 @@ int main(int argc, char** argv)
 								continue;
 							}
 
-							FILE* llrfile = fopen("llr.in", "w");
+							char llrstr[100];
+							sprintf(llrstr, "llr.%d.in", base);
+							FILE* llrfile = fopen(llrstr, "w");
 							fprintf(llrfile, "ABC ($a*$b^$c$d)/$e\n");
 							gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp, base, num, temp3, (base-1)/g);
 							fclose(llrfile);
 
-							FILE* llrprocess = popen("./llr llr.in -d -oOutputIterations=1000000", "r");
+							sprintf(llrstr, "./llr llr.%d.in -d -oOutputIterations=1000000", base);
+							FILE* llrprocess = popen(llrstr, "r");
 							int n = fread(output, 1, 999999, llrprocess);
 							output[n] = '\0';
 							pclose(llrprocess);
+							if(strstr(output, "(Factored")!=NULL)
+								*strstr(output, "(Factored") = '\0';
 							printf("%s", strstr(output, "\r(")!=NULL ? strstr(output, "\r(") : output);
 						}
 

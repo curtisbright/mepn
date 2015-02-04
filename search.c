@@ -192,6 +192,8 @@ int main(int argc, char** argv)
 							int n = fread(output, 1, 999999, llrprocess);
 							output[n] = '\0';
 							pclose(llrprocess);
+							if(strstr(output, "(Factored")!=NULL)
+								*strstr(output, "(Factored") = '\0';
 							printf("%s", strstr(output, "\r(")!=NULL ? strstr(output, "\r(") : output);
 						}
 

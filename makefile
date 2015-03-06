@@ -1,4 +1,4 @@
-all: minimal simple search sieving.start sieving merge organize summary check
+all: minimal simple search sieving.start sieving merge organize summary check unsolved
 minimal: minimal.c
 	gcc minimal.c -o minimal -Ofast -lgmp -std=c99 -DPRINTSTATS -DPRINTITER -DPRINTDATA
 simple: simple.c
@@ -17,5 +17,7 @@ summary: summary.c
 	gcc summary.c -o summary -Ofast -std=c99
 check: check.c
 	gcc check.c -o check -Ofast -lgmp -std=c99
+unsolved: unsolved.c
+	gcc unsolved.c -o unsolved -Ofast -lgmp -std=c99
 clean:
-	rm -f minimal simple search sieving.start merge organize summary check
+	rm -f minimal simple search sieving.start merge organize summary check unsolved

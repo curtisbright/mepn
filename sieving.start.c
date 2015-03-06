@@ -16,7 +16,6 @@ int main(int argc, char** argv)
 		printf("between exponents n and m, given on the command-line\n");
 		printf("which may then be processed by programs sieving and search\n");
 	}
-	printf("Current unsolved families:\n");
 
 	mpz_t p;
 	mpz_init(p);
@@ -78,10 +77,10 @@ int main(int argc, char** argv)
 					mpz_submul_ui(temp2, z, (base-1)/g);
 					mpz_neg(temp3, temp2);
 					// Print family
-					if((base-1)/g==1)
+					/*if((base-1)/g==1)
 						gmp_printf("%s(%s)^n%s = %Zd*%d^n%+Zd\n", start, middle, end, temp, base, temp3);
 					else
-						gmp_printf("%s(%s)^n%s = (%Zd*%d^n%+Zd)/%d\n", start, middle, end, temp, base, temp3, (base-1)/g);
+						gmp_printf("%s(%s)^n%s = (%Zd*%d^n%+Zd)/%d\n", start, middle, end, temp, base, temp3, (base-1)/g);*/
 					
 					if(outopen)
 					{	gmp_fprintf(out, "%Zd*%d^n%+Zd\n", temp, base, temp3);

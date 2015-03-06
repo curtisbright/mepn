@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 					}
 					int n = 2;
 					int s = 0;
-					while(mpz_cmp_ui(an, 1)!=0)
+					while(mpz_cmp_ui(an, 1)!=0 || s != 0)
 					{	if(mpz_divisible_ui_p(an, n)!=0)
 						{	mpz_divexact_ui(an, an, n);
 							sprintf(nstr, "%d*", n);
@@ -95,7 +95,7 @@ int main(int argc, char** argv)
 					}
 					n = 2;
 					s = 0;
-					while(mpz_cmp_ui(cn, 1)!=0)
+					while(mpz_cmp_ui(cn, 1)!=0 || s != 0)
 					{	if(mpz_divisible_ui_p(cn, n)!=0)
 						{	mpz_divexact_ui(cn, cn, n);
 							sprintf(nstr, "%d*", n);

@@ -109,7 +109,7 @@ int main(int argc, char** argv)
 					if(PRINTPRIMO && result==1)
 					{	mkdir("primo", S_IRWXU);
 						char outfilename[100];
-						sprintf(outfilename, "primo/base%d-%d.in", n, count);
+						sprintf(outfilename, "primo/base%d-%d.in", n, count+remaining);
 						FILE* out = fopen(outfilename, "w");
 						fprintf(out, "[Candidate]\n");
 						gmp_fprintf(out, "N=%Zd\n", p);

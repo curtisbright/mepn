@@ -198,7 +198,7 @@ int main(int argc, char** argv)
 							pclose(llrprocess);
 							if(strstr(output, "(Factored")!=NULL)
 								*strstr(output, "(Factored") = '\0';
-							printf("%s", strstr(output, "\r(")!=NULL ? strstr(output, "\r(") : output);
+							printf("%s", output);
 						}
 
 						if(strstr(output, "PRP")!=NULL)

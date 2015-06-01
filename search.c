@@ -103,10 +103,11 @@ int main(int argc, char** argv)
 						mpz_mul(temp, temp, temp3);
 						mpz_mul(temp2, temp2, temp3);
 						mpz_submul_ui(temp2, z, (base-1)/g);
-						mpz_neg(temp3, temp2);
+						mpz_neg(temp2, temp2);
+						mpz_div(temp3, temp, temp3);
 
 						char family[100];
-						gmp_sprintf(family, "%Zd*%d^n%+Zd\n", temp, base, temp3);
+						gmp_sprintf(family, "%Zd*%d^n%+Zd\n", temp, base, temp2);
 
 						// Find an exponent to test
 						int num = -1;
@@ -146,7 +147,7 @@ int main(int argc, char** argv)
 						char output[1000000] = {0};
 						if(argc<5 || countfam==atoi(argv[4]))
 						{	FILE* kernel = fopen(kernelfilename, "r");
-							printf("Checking %s%c^(%d)%s (base %d)...\n", start, middle[0], num, end, base);
+							printf("Checking %s(%c^%d)%s (base %d)...\n", start, middle[0], num, end, base);
 							while(fgets(prime, MAXSTRING, kernel)!=NULL)
 							{	prime[strlen(prime)-1] = '\0';
 								int k;
@@ -160,7 +161,7 @@ int main(int argc, char** argv)
 							fclose(kernel);
 
 							if(hassubword)
-							{	printf("%s%c^(%d)%s (base %d) has a kernel subword %s\n", start, middle[0], num, end, base, prime);
+							{	printf("%s(%c^%d)%s (base %d) has a kernel subword %s\n", start, middle[0], num, end, base, prime);
 
 								// Remove the family from the sieve file
 								sieve = fopen(sievefilename, "r");
@@ -187,7 +188,7 @@ int main(int argc, char** argv)
 							sprintf(llrstr, "llr.%d.in", base);
 							FILE* llrfile = fopen(llrstr, "w");
 							fprintf(llrfile, "ABC ($a*$b^$c$d)/$e\n");
-							gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp, base, num, temp3, (base-1)/g);
+							gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp3, base, num+zlen, temp2, (base-1)/g);
 							fclose(llrfile);
 
 							sprintf(llrstr, "./llr llr.%d.in -d -oOutputIterations=1000000", base);

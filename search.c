@@ -71,6 +71,8 @@ int main(int argc, char** argv)
 						continue;
 					sprintf(infilename, "data/%s", ep->d_name);
 					FILE* in = fopen(infilename, "r");
+					while(in==NULL)
+						in = fopen(infilename, "r");
 					tmpnam(outfilename);
 					FILE* out = fopen(outfilename, "w");
 					char line[100];
@@ -113,8 +115,9 @@ int main(int argc, char** argv)
 						int num = -1;
 						char sievefilename[100], sievetmpfilename[100];
 						sprintf(sievefilename, "data/sieve.%d.txt", base);
-						tmpnam(sievetmpfilename);
 						FILE* sieve = fopen(sievefilename, "r");
+						while(sieve==NULL)
+							sieve = fopen(sievefilename, "r");
 						if(sieve!=NULL)
 						{	while(fgets(line, 100, sieve)!=NULL)
 							{	if(strcmp(line, family)==0)
@@ -147,6 +150,8 @@ int main(int argc, char** argv)
 						char output[1000000] = {0};
 						if(argc<5 || countfam==atoi(argv[4]))
 						{	FILE* kernel = fopen(kernelfilename, "r");
+							while(kernel==NULL)
+								kernel = fopen(kernelfilename, "r");
 							printf("Checking %s(%c^%d)%s (base %d)...\n", start, middle[0], num, end, base);
 							while(fgets(prime, MAXSTRING, kernel)!=NULL)
 							{	prime[strlen(prime)-1] = '\0';
@@ -165,6 +170,9 @@ int main(int argc, char** argv)
 
 								// Remove the family from the sieve file
 								sieve = fopen(sievefilename, "r");
+								while(sieve==NULL)
+									sieve = fopen(sievefilename, "r");
+								tmpnam(sievetmpfilename);
 								FILE* sieveout = fopen(sievetmpfilename, "w");
 								char sieveline[100];
 								int thisfamily = 0;
@@ -187,6 +195,8 @@ int main(int argc, char** argv)
 							char llrstr[100];
 							sprintf(llrstr, "llr.%d.in", base);
 							FILE* llrfile = fopen(llrstr, "w");
+							while(llrfile==NULL)
+								llrfile = fopen(llrstr, "w");
 							fprintf(llrfile, "ABC ($a*$b^$c$d)/$e\n");
 							gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp3, base, num+zlen, temp2, (base-1)/g);
 							fclose(llrfile);
@@ -204,11 +214,16 @@ int main(int argc, char** argv)
 						if(strstr(output, "PRP")!=NULL)
 						{	// Add prime to set of minimal primes
 							FILE* append = fopen(kernelfilename, "a");
+							while(append==NULL)
+								append = fopen(kernelfilename, "a");
 							fprintf(append, "%s\n", candidate);
 							fclose(append);
 
 							// Remove the family from the sieve file
 							sieve = fopen(sievefilename, "r");
+							while(sieve==NULL)
+								sieve = fopen(sievefilename, "r");
+							tmpnam(sievetmpfilename);
 							FILE* sieveout = fopen(sievetmpfilename, "w");
 							char sieveline[100];
 							int thisfamily = 0;
@@ -231,6 +246,9 @@ int main(int argc, char** argv)
 
 							// Remove the exponent just tested from the sieve file
 							sieve = fopen(sievefilename, "r");
+							while(sieve==NULL)
+								sieve = fopen(sievefilename, "r");
+							tmpnam(sievetmpfilename);
 							FILE* sieveout = fopen(sievetmpfilename, "w");
 							char sieveline[100];
 							int thisfamily = 0;

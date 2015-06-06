@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 	DIR *dp;
 	//struct dirent *ep;
 
-	printf("Current unsolved families:\n");
+	printf("Base:\tCurrent unsolved families:");
 
 	char filename[100];
 
@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 				if(in==NULL)
 					continue;
 				char line[100];
-				printf("BASE %d:\n", base);
+				printf("\n%d", base);
 				char start[100];
 				char middle[2];
 				char end[100];
@@ -143,14 +143,14 @@ int main(int argc, char** argv)
 					// Print family
 					if((base-1)/g==1)
 						if(zlen==0)
-							printf("%s(%s^n)%s = %s%d^n%s, n >= %d\n", start, middle, end, astr, base, cstr, searchheight);
+							printf("\t%s(%s^n)%s = %s%d^n%s, n >= %d\n", start, middle, end, astr, base, cstr, searchheight);
 						else
-							printf("%s(%s^n)%s = %s%d^(n+%d)%s, n >= %d\n", start, middle, end, astr, base, zlen, cstr, searchheight);
+							printf("\t%s(%s^n)%s = %s%d^(n+%d)%s, n >= %d\n", start, middle, end, astr, base, zlen, cstr, searchheight);
 					else
 						if(zlen==0)
-							printf("%s(%s^n)%s = (%s%d^n%s)/%d, n >= %d\n", start, middle, end, astr, base, cstr, (base-1)/g, searchheight);
+							printf("\t%s(%s^n)%s = (%s%d^n%s)/%d, n >= %d\n", start, middle, end, astr, base, cstr, (base-1)/g, searchheight);
 						else
-							printf("%s(%s^n)%s = (%s%d^(n+%d)%s)/%d, n >= %d\n", start, middle, end, astr, base, zlen, cstr, (base-1)/g, searchheight);
+							printf("\t%s(%s^n)%s = (%s%d^(n+%d)%s)/%d, n >= %d\n", start, middle, end, astr, base, zlen, cstr, (base-1)/g, searchheight);
 
 					mpz_clears(x, y, z, temp, temp2, temp3, temp10, NULL);
 				}

@@ -1809,9 +1809,9 @@ int main(int argc, char** argv)
 	int l, h, resume = 0;
 	if(argc==1)
 	{	printf("Computes minimal primes for bases between l and h,\n");
-		printf("possibly along with a set of unsolved families.\n");
-		printf("Usage: minimal l h\n");
-		printf("To resume base b from iter i: minimal resume b i\n");
+		printf("possibly along with a set of unsolved families\n");
+		printf("Usage: ./minimal l h\n");
+		printf("To resume base b from iteration i: ./minimal resume b i\n");
 		return 0;
 	}
 	else if(strcmp(argv[1], "resume")==0)

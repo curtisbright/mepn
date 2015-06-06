@@ -46,10 +46,11 @@ int main(int argc, char** argv)
 
 	if(argc<=1 || (argc==2 && argv[1][0] != '-'))
 	{	printf("After sieving has been done, this program uses LLR\n");
-		printf("to search for prime candidates between exponents\n");
-		printf("n and m, given on the command-line (optionally, a\n");
-		printf("base b may be given as a third parameter)\n");
-		printf("Alternatively, \"./search -\" searches everything\n");
+		printf("to search for prime candidates between exponents n and m\n");
+		printf("Usage: ./search n m\n");
+		printf("To only search base b: ./search n m b\n");
+		printf("To only search the ith family in base b: ./search n m b i\n");
+		printf("To search everything: ./search -\n");
 		printf("\nNOTE: The program llr must be located in the base directory\n");
 		return 0;
 	}

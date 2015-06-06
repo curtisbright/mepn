@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	struct dirent *ep;
 
 	if(argc<=2)
-	{	printf("Initializes sieve files for all unsolved families\n");
+	{	printf("Initializes sieve files for all unsolved simple families\n");
 		printf("between exponents n and m, given on the command-line\n");
 		printf("which may then be processed by programs sieving and search\n");
 	}

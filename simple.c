@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 	double time_spent;
 
 	if(argc<=2)
-	{	printf("This program searches unsolved simple families\n");
+	{	printf("This program searches all unsolved simple families\n");
 		printf("for prime candidates between exponents n and m,\n");
 		printf("given on the command-line\n");
 		return 0;

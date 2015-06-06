@@ -58,15 +58,33 @@ int main(int argc, char** argv)
 					mpz_mul(temp, temp, temp3);
 					mpz_mul(temp2, temp2, temp3);
 					mpz_submul_ui(temp2, z, (base-1)/g);
-					mpz_neg(temp3, temp2);
+					mpz_neg(temp2, temp2);
+					mpz_div(temp3, temp, temp3);
+
+					char family[100];
+					gmp_sprintf(family, "%Zd*%d^n%+Zd\n", temp, base, temp2);
+
+					int searchheight;
+					char sievefilename[100];
+					sprintf(sievefilename, "data/sieve.%d.txt", base);
+					FILE* sieve = fopen(sievefilename, "r");
+					while(sieve==NULL)
+						sieve = fopen(sievefilename, "r");
+					while(fgets(line, 100, sieve)!=NULL)
+					{	if(strcmp(line, family)==0)
+						{	searchheight = atoi(fgets(line, 100, sieve));
+							break;
+						}
+					}
+					fclose(sieve);
 
 					char astr[100] = {'\0'};
 					char cstr[100];
 					char nstr[10];
 					mpz_t an, cn;
 					mpz_inits(an, cn, NULL);
-					mpz_set(an, temp);
-					mpz_set(cn, temp3);
+					mpz_set(an, temp3);
+					mpz_set(cn, temp2);
 					if(mpz_cmp_ui(cn, 0)>0)
 						sprintf(cstr, "+");
 					else
@@ -124,9 +142,15 @@ int main(int argc, char** argv)
 
 					// Print family
 					if((base-1)/g==1)
-						printf("%s(%s)^n%s = %s%d^n%s\n", start, middle, end, astr, base, cstr);
+						if(zlen==0)
+							printf("%s(%s^n)%s = %s%d^n%s, n >= %d\n", start, middle, end, astr, base, cstr, searchheight);
+						else
+							printf("%s(%s^n)%s = %s%d^(n+%d)%s, n >= %d\n", start, middle, end, astr, base, zlen, cstr, searchheight);
 					else
-						printf("%s(%s)^n%s = (%s%d^n%s)/%d\n", start, middle, end, astr, base, cstr, (base-1)/g);
+						if(zlen==0)
+							printf("%s(%s^n)%s = (%s%d^n%s)/%d, n >= %d\n", start, middle, end, astr, base, cstr, (base-1)/g, searchheight);
+						else
+							printf("%s(%s^n)%s = (%s%d^(n+%d)%s)/%d, n >= %d\n", start, middle, end, astr, base, zlen, cstr, (base-1)/g, searchheight);
 
 					mpz_clears(x, y, z, temp, temp2, temp3, temp10, NULL);
 				}

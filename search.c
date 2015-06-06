@@ -199,16 +199,14 @@ int main(int argc, char** argv)
 								continue;
 							}
 
-							char llrstr[100];
-							sprintf(llrstr, "llr.%d.in", base);
-							FILE* llrfile = fopen(llrstr, "w");
-							while(llrfile==NULL)
-								llrfile = fopen(llrstr, "w");
+							char llrstr[100], tmpllr[100];
+							tmpnam(tmpllr);
+							FILE* llrfile = fopen(tmpllr, "w");
 							fprintf(llrfile, "ABC ($a*$b^$c$d)/$e\n");
 							gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp3, base, num+zlen, temp2, (base-1)/g);
 							fclose(llrfile);
 
-							sprintf(llrstr, "./llr llr.%d.in -d -oOutputIterations=1000000", base);
+							sprintf(llrstr, "./llr %s -d", tmpllr);
 							FILE* llrprocess = popen(llrstr, "r");
 							int n = fread(output, 1, 999999, llrprocess);
 							output[n] = '\0';

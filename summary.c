@@ -105,7 +105,7 @@ int main(int argc, char** argv)
 
 	qsort(levels, count, sizeof(struct data), compare);
 
-	printf("level\tsize\twidth\tunsolved\tsearched height\n");
+	printf("base\tsize\twidth\tunsolved\tsearched height\n");
 	for(int i=0; i<count; i++)
 	{	char str[100];
 		sprintf(str, "%d", levels[i].searchheight);

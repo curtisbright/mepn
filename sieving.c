@@ -25,6 +25,8 @@ int main(int argc, char** argv)
 		printf("merges the results with the LLR search data\n");
 		printf("\nNOTE: The program srsieve must be located in the directory srsieve\n");
 	}
+	else if(access("srsieve/srsieve", F_OK)==-1)
+		printf("The program srsieve must be located in the directory srsieve\n");
 	else if(argc>1)
 	{	signal(SIGINT, sig_handler);
 

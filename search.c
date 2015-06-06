@@ -6,6 +6,7 @@
 #include <time.h>
 #include <gmp.h>
 #include <stdbool.h>
+#include <unistd.h>
 #define MAXSTRING 1200000
 
 FILE *popen(const char *command, const char *type);
@@ -52,6 +53,11 @@ int main(int argc, char** argv)
 		printf("To only search the ith family in base b: ./search n m b i\n");
 		printf("To search everything: ./search -\n");
 		printf("\nNOTE: The program llr must be located in the base directory\n");
+		return 0;
+	}
+
+	if(access("llr", F_OK)==-1)
+	{	printf("The program llr must be located in the base directory\n");
 		return 0;
 	}
 

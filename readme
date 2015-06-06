@@ -45,7 +45,7 @@ organize:
 	Sorts the minimal primes and removes any extraneous elements
 
 check:
-	Checks the minimal primes using a pseduoprime test and
+	Checks the minimal primes using a probable prime test and
 	creates candidate files suitable for testing with Primo
 
 summary:
@@ -53,7 +53,7 @@ summary:
 	computed for each base on the standard output
 
 unsolved:
-	Writes a summary of each unsolved family on the standard output
+	Writes a summary of each simple unsolved family on the standard output
 
 Precomputed results for many bases can be found at:
 	https://github.com/curtisbright/mepn-data/tree/master/data

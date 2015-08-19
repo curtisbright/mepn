@@ -118,6 +118,12 @@ int main(int argc, char** argv)
 						char family[100];
 						gmp_sprintf(family, "%Zd*%d^n%+Zd\n", temp, base, temp2);
 
+						countfam++;
+						if(argc>=5 && countfam!=atoi(argv[4]))
+						{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
+							continue;
+						}
+
 						// Find an exponent to test
 						int num = -1;
 						char sievefilename[100], sievetmpfilename[100];
@@ -125,20 +131,16 @@ int main(int argc, char** argv)
 						FILE* sieve = fopen(sievefilename, "r");
 						while(sieve==NULL)
 							sieve = fopen(sievefilename, "r");
-						if(sieve!=NULL)
-						{	while(fgets(line, 100, sieve)!=NULL)
-							{	if(strcmp(line, family)==0)
-								{	while(num<i && fgets(line, 100, sieve)!=NULL && strchr(line, '*')==NULL)
-										num = atoi(line);
-									break;
-								}
+						while(fgets(line, 100, sieve)!=NULL)
+						{	if(strcmp(line, family)==0)
+							{	while(num<i && fgets(line, 100, sieve)!=NULL && strchr(line, '*')==NULL)
+									num = atoi(line);
+								break;
 							}
-							fclose(sieve);
 						}
+						fclose(sieve);
 
-						countfam++;
-
-						if(num!=i && (argv[1][0] != '-' || num==-1))
+						if(num==-1 || (num!=i && argv[1][0] != '-' && argc < 5))
 						{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
 							continue;
 						}
@@ -155,66 +157,65 @@ int main(int argc, char** argv)
 						char prime[MAXSTRING];
 						int hassubword = 0;
 						char output[1000000] = {0};
-						if(argc<5 || countfam==atoi(argv[4]))
-						{	FILE* kernel = fopen(kernelfilename, "r");
-							while(kernel==NULL)
-								kernel = fopen(kernelfilename, "r");
-							printf("Checking %s(%c^%d)%s (base %d)...\n", start, middle[0], num, end, base);
-							while(fgets(prime, MAXSTRING, kernel)!=NULL)
-							{	prime[strlen(prime)-1] = '\0';
-								int k;
-								if(subword(prime, start, middle[0], end, &k)==1)
-								{	if(k<=num)
-									{	hassubword = 1;
-										break;
-									}
+
+						FILE* kernel = fopen(kernelfilename, "r");
+						while(kernel==NULL)
+							kernel = fopen(kernelfilename, "r");
+						printf("Checking %s(%c^%d)%s (base %d)...\n", start, middle[0], num, end, base);
+						while(fgets(prime, MAXSTRING, kernel)!=NULL)
+						{	prime[strlen(prime)-1] = '\0';
+							int k;
+							if(subword(prime, start, middle[0], end, &k)==1)
+							{	if(k<=num)
+								{	hassubword = 1;
+									break;
 								}
 							}
-							fclose(kernel);
-
-							if(hassubword)
-							{	printf("%s(%c^%d)%s (base %d) has a kernel subword %s\n", start, middle[0], num, end, base, prime);
-
-								// Remove the family from the sieve file
-								sieve = fopen(sievefilename, "r");
-								while(sieve==NULL)
-									sieve = fopen(sievefilename, "r");
-								tmpnam(sievetmpfilename);
-								FILE* sieveout = fopen(sievetmpfilename, "w");
-								char sieveline[100];
-								int thisfamily = 0;
-								while(fgets(sieveline, 100, sieve)!=NULL)
-								{	if(strchr(sieveline, '*')!=NULL)
-										thisfamily = 0;
-									if(strcmp(sieveline, family)==0)
-										thisfamily = 1;
-									if(thisfamily==0)
-										fprintf(sieveout, "%s", sieveline);
-								}
-								fclose(sieve);
-								fclose(sieveout);
-								remove(sievefilename);
-								rename(sievetmpfilename, sievefilename);
-
-								continue;
-							}
-
-							char llrstr[100], tmpllr[100];
-							tmpnam(tmpllr);
-							FILE* llrfile = fopen(tmpllr, "w");
-							fprintf(llrfile, "ABC ($a*$b^$c$d)/$e\n");
-							gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp3, base, num+zlen, temp2, (base-1)/g);
-							fclose(llrfile);
-
-							sprintf(llrstr, "./llr %s -d", tmpllr);
-							FILE* llrprocess = popen(llrstr, "r");
-							int n = fread(output, 1, 999999, llrprocess);
-							output[n] = '\0';
-							pclose(llrprocess);
-							if(strstr(output, "(Factored")!=NULL)
-								*strstr(output, "(Factored") = '\0';
-							printf("%s", output);
 						}
+						fclose(kernel);
+
+						if(hassubword)
+						{	printf("%s(%c^%d)%s (base %d) has a kernel subword %s\n", start, middle[0], num, end, base, prime);
+
+							// Remove the family from the sieve file
+							sieve = fopen(sievefilename, "r");
+							while(sieve==NULL)
+								sieve = fopen(sievefilename, "r");
+							tmpnam(sievetmpfilename);
+							FILE* sieveout = fopen(sievetmpfilename, "w");
+							char sieveline[100];
+							int thisfamily = 0;
+							while(fgets(sieveline, 100, sieve)!=NULL)
+							{	if(strchr(sieveline, '*')!=NULL)
+									thisfamily = 0;
+								if(strcmp(sieveline, family)==0)
+									thisfamily = 1;
+								if(thisfamily==0)
+									fprintf(sieveout, "%s", sieveline);
+							}
+							fclose(sieve);
+							fclose(sieveout);
+							remove(sievefilename);
+							rename(sievetmpfilename, sievefilename);
+
+							continue;
+						}
+
+						char llrstr[100], tmpllr[100];
+						tmpnam(tmpllr);
+						FILE* llrfile = fopen(tmpllr, "w");
+						fprintf(llrfile, "ABC ($a*$b^$c$d)/$e\n");
+						gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp3, base, num+zlen, temp2, (base-1)/g);
+						fclose(llrfile);
+
+						sprintf(llrstr, "./llr %s -d", tmpllr);
+						FILE* llrprocess = popen(llrstr, "r");
+						int n = fread(output, 1, 999999, llrprocess);
+						output[n] = '\0';
+						pclose(llrprocess);
+						if(strstr(output, "(Factored")!=NULL)
+							*strstr(output, "(Factored") = '\0';
+						printf("%s", output);
 
 						if(strstr(output, "PRP")!=NULL)
 						{	// Add prime to set of minimal primes

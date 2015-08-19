@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #define MAXSTRING 1200000
+#define min(a,b) (((a) < (b)) ? (a) : (b))
 
 FILE *popen(const char *command, const char *type);
 int pclose(FILE *stream);
@@ -88,6 +89,7 @@ int main(int argc, char** argv)
 					char end[100];
 					char candidate[MAXSTRING];
 					int countfam = 0;
+					int minexpfound = 0x7FFFFFFF;
 					while(fgets(line, 100, in)!=NULL)
 					{	int l = (int)(strchr(line, '*')-line);
 						middle[0] = line[l-1];
@@ -139,6 +141,8 @@ int main(int argc, char** argv)
 							}
 						}
 						fclose(sieve);
+
+						minexpfound = min(minexpfound, num);
 
 						if(num==-1 || (num!=i && argv[1][0] != '-' && argc < 5))
 						{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
@@ -279,6 +283,8 @@ int main(int argc, char** argv)
 					fclose(in);
 					remove(infilename);
 					rename(outfilename, infilename);
+
+					i = minexpfound-1;
 				}
 			}
 			(void)closedir(dp);

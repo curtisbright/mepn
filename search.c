@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 	int minexpfound;
 
 	for(int i=atoi(argv[1]); argv[1][0] == '-' || i<=atoi(argv[2]); i = minexpfound)
-	{	bool test = false;
+	{	bool numsleft = false;
 		dp = opendir("./data");
 		if(dp == NULL)
 		{	perror("Couldn't open the directory");
@@ -152,14 +152,15 @@ int main(int argc, char** argv)
 					fclose(sieve);
 
 					if(num!=-1)
-						minexpfound = min(minexpfound, num);
+					{	minexpfound = min(minexpfound, num);
+						numsleft = true;
+					}
 
-					if(num==-1 || (num!=i && argv[1][0] != '-' && argc < 5))
+					if(num==-1 || num!=i)
 					{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
 						continue;
 					}
 
-					test = true;
 					memset(candidate, 0, MAXSTRING);
 					strcpy(candidate, start);
 					memset(candidate+strlen(candidate), middle[0], num);
@@ -297,7 +298,7 @@ int main(int argc, char** argv)
 		}
 		closedir(dp);
 
-		if(test==false && argv[1][0] == '-')
+		if(numsleft==false && argv[1][0] == '-')
 			break;
 	}
 

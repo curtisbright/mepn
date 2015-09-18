@@ -130,7 +130,7 @@ int main(int argc, char** argv)
 					gmp_sprintf(family, "%Zd*%d^n%+Zd\n", temp, base, temp2);
 
 					countfam++;
-					if(argc>=5 && countfam!=atoi(argv[4]))
+					if(argc>=5 && countfam!=atoi(argv[4]) && argv[4][0]!='-')
 					{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
 						continue;
 					}
@@ -223,8 +223,14 @@ int main(int argc, char** argv)
 					gmp_fprintf(llrfile, "%Zd %d %d %+Zd %d\n", temp3, base, num+zlen, temp2, (base-1)/g);
 					fclose(llrfile);
 
-					sprintf(llrstr, "./llr %s -d", tmpllr);
-					FILE* llrprocess = popen(llrstr, "r");
+					if(argc>=6)
+						sprintf(llrstr, "./llr %s -d -a%s", tmpllr, argv[5]);
+					else
+						sprintf(llrstr, "./llr %s -d", tmpllr);
+					printf("%s\n", llrstr);
+					FILE* llrprocess = NULL;
+					while(llrprocess==NULL)
+						llrprocess = popen(llrstr, "r");
 					int n = fread(output, 1, 999999, llrprocess);
 					output[n] = '\0';
 					pclose(llrprocess);

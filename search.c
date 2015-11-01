@@ -90,8 +90,6 @@ int main(int argc, char** argv)
 				FILE* in = fopen(infilename, "r");
 				while(in==NULL)
 					in = fopen(infilename, "r");
-				tmpnam(outfilename);
-				FILE* out = fopen(outfilename, "w");
 				char line[100];
 				char start[100];
 				char middle[2];
@@ -100,7 +98,9 @@ int main(int argc, char** argv)
 				int countfam = 0;
 
 				while(fgets(line, 100, in)!=NULL)
-				{	int l = (int)(strchr(line, '*')-line);
+				{	char origfamily[100];
+					strcpy(origfamily, line);
+					int l = (int)(strchr(line, '*')-line);
 					middle[0] = line[l-1];
 					middle[1] = '\0';
 					line[strlen(line)-1] = '\0';
@@ -131,9 +131,7 @@ int main(int argc, char** argv)
 
 					countfam++;
 					if(argc>=5 && countfam!=atoi(argv[4]) && argv[4][0]!='-')
-					{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
 						continue;
-					}
 
 					// Find an exponent to test
 					int num = -1;
@@ -157,9 +155,7 @@ int main(int argc, char** argv)
 					}
 
 					if(num==-1 || num!=i)
-					{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
 						continue;
-					}
 
 					memset(candidate, 0, MAXSTRING);
 					strcpy(candidate, start);
@@ -190,7 +186,23 @@ int main(int argc, char** argv)
 					fclose(kernel);
 
 					if(hassubword)
-					{	printf("%s(%c^%d)%s (base %d) has a kernel subword %s\n", start, middle[0], num, end, base, prime);
+					{	printf("%s(%c^%d)%s (base %d) has a minimal subword %s\n", start, middle[0], num, end, base, prime);
+
+						// Remove family from unsolved file
+						tmpnam(outfilename);
+						FILE* out = fopen(outfilename, "w");
+						char unsolvedfam[100];
+						FILE* in2 = fopen(infilename, "r");
+						while(in2==NULL)
+							in2 = fopen(infilename, "r");
+						while(fgets(unsolvedfam, 100, in2) != NULL)
+						{	if(strcmp(unsolvedfam, origfamily) != 0)
+								fprintf(out, "%s", unsolvedfam);
+						}
+						fclose(in2);
+						fclose(out);
+						remove(infilename);
+						rename(outfilename, infilename);
 
 						// Remove the family from the sieve file
 						sieve = fopen(sievefilename, "r");
@@ -239,7 +251,23 @@ int main(int argc, char** argv)
 					printf("%s", output);
 
 					if(strstr(output, "PRP")!=NULL)
-					{	// Add prime to set of minimal primes
+					{	// Remove family from unsolved file
+						tmpnam(outfilename);
+						FILE* out = fopen(outfilename, "w");
+						char unsolvedfam[100];
+						FILE* in2 = fopen(infilename, "r");
+						while(in2==NULL)
+							in2 = fopen(infilename, "r");
+						while(fgets(unsolvedfam, 100, in2) != NULL)
+						{	if(strcmp(unsolvedfam, origfamily) != 0)
+								fprintf(out, "%s", unsolvedfam);
+						}
+						fclose(in2);
+						fclose(out);
+						remove(infilename);
+						rename(outfilename, infilename);
+
+						// Add prime to set of minimal primes
 						FILE* append = fopen(kernelfilename, "a");
 						while(append==NULL)
 							append = fopen(kernelfilename, "a");
@@ -268,10 +296,7 @@ int main(int argc, char** argv)
 						rename(sievetmpfilename, sievefilename);
 					}
 					else if(strstr(output, "not prime")!=NULL)
-					{	// Family is still unsolved
-						fprintf(out, "%s%c*%s\n", start, middle[0], end);
-
-						// Remove the exponent just tested from the sieve file
+					{	// Remove the exponent just tested from the sieve file
 						sieve = fopen(sievefilename, "r");
 						while(sieve==NULL)
 							sieve = fopen(sievefilename, "r");
@@ -292,14 +317,8 @@ int main(int argc, char** argv)
 						remove(sievefilename);
 						rename(sievetmpfilename, sievefilename);
 					}
-					else
-					{	fprintf(out, "%s%c*%s\n", start, middle[0], end);
-					}
 				}
-				fclose(out);
 				fclose(in);
-				remove(infilename);
-				rename(outfilename, infilename);
 			}
 		}
 		closedir(dp);
